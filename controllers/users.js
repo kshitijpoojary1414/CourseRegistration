@@ -86,7 +86,10 @@ async function registerUser (req, res)  {
     const token = jwt.sign(tokenBody, process.env.TOKEN_SECRET)
 
     return res.status(200).json(
-      JSON.stringify({ data, token })
+      {
+        token : token,
+        userInfo : userBody
+      }
     )
   } catch ( error ) {
       console.log(error)
