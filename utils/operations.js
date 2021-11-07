@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 "use strict";
-const uuid = require("uuid/v4");
+const uuid = require("uuid");
 const IdGenerator = require("auth0-id-generator");
 const _intersection = require("lodash/intersection");
 

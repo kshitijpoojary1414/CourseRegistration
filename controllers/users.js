@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const { email } = require("is");
 const jwt = require("jsonwebtoken");
 const userQueries = require("../queries/users")
 const { Validations } = require("../utils")
@@ -8,7 +9,18 @@ async function loginUser (req, res) {
   try {
     const { body } = req
 
-    const response = await userQueries.findUserByEmail(body)
+    const { email_id } = body
+    
+    if (
+      Validations.isEmpty(email_id) ||
+      Validations.isUndefined(email_id)
+    ) {
+      res.status(414).json({
+        message : "Invalid credentials"
+      })
+    }
+
+    let response = await userQueries.findUserByEmail(email_id)
 
     if(
       Validations.isUndefined(response) || 
@@ -23,14 +35,15 @@ async function loginUser (req, res) {
       res.status(400).send("Email or password is incorrect");
     }
 
-    const token = jwt.sign(
-      { _id: response._id, email: response.email, role: response.role },
-      process.env.TOKEN_SECRET
-    );
+    response = response[0]
+    const tokenBody = { id: response.id, email_id: response.email_id, role: response.role }
 
-    res.status(200).send({ data: response.role, token });
+    console.log(tokenBody)
+    const token = jwt.sign(tokenBody, process.env.TOKEN_SECRET)
+    res.status(200).send({ data: response, token });
 
   } catch( error ) {
+    console.log(error)
     res.status(500).send("Internal Server Error");
   }
 
@@ -39,8 +52,8 @@ async function loginUser (req, res) {
 async function registerUser (req, res)  {
   try {
     const { body } = req 
-
-    const response = await userQueries.findUserByEmail(req.body) 
+    const { email_id } = body
+    const response = await userQueries.findUserByEmail(email_id) 
 
     if (
       Validations.isDefined(response) &&
@@ -68,8 +81,9 @@ async function registerUser (req, res)  {
     }
 
     const data = await userQueries.createUser([userBody])
+    const tokenBody = { id: data.id, email: data.email, role: data.role }
 
-    const token = jwt.sign({ id: data.id, email: data.email, role: data.role }, process.env.TOKEN_SECRET)
+    const token = jwt.sign(tokenBody, process.env.TOKEN_SECRET)
 
     return res.status(200).json(
       JSON.stringify({ data, token })
@@ -78,12 +92,46 @@ async function registerUser (req, res)  {
       console.log(error)
       res.status(500).send("Internal Server Error")
   }
+}
 
+async function getUserInfo (req, res)  {
+  try {
+    const { body } = req 
+    
+    const { user_id } = req
+
+    const response = await userQueries.findUserById(user_id) 
+
+    if (
+      Validations.isUndefined(response) ||
+      Validations.isEmpty(response)
+    ) {
+      return res.status(404).json(
+        JSON.stringify({message: "User Not Found"})
+      )
+    }
+
+    return res.status(200).json(
+      {...response[0]}
+    )
+  } catch ( error ) {
+      console.log(error)
+      res.status(500).send("Internal Server Error")
+  }
+
+}
+
+async function findUserById(userId) {
+  const data = await userQueries.findUserById(userId)
+  
+  return data
 }
 
 
 
 module.exports = {
   loginUser,
-  registerUser
+  registerUser,
+  getUserInfo,
+  findUserById
 };
