@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 "use strict";
-const uuid = require("uuid");
+const {v4 : uuidv4} = require("uuid");
 const IdGenerator = require("auth0-id-generator");
 const _intersection = require("lodash/intersection");
 
@@ -63,7 +63,7 @@ function removeArrayIndex(array, index) {
 }
 
 function guid() {
-  return uuid();
+  return uuidv4();
 }
 
 function formatCurrency(currency = "USD", amount = 0) {

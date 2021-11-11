@@ -2,17 +2,25 @@ const express = require('express')
 const router = express.Router()
 const { ROLES } = require("../constants/roles")
 const { userAuthentication} = require("../middlewares/auth")
-var userRoutes = require('../controllers/users')
+var userController = require('../controllers/users')
 
     
 
 router.route('/users/register')
-    .post(userRoutes.registerUser);
+    .post(userController.registerUser);
 
 router.route('/users/login')
-    .post(userRoutes.loginUser);
+    .post(userController.loginUser);
 
-router.route('/users/info')
-    .get(userAuthentication() ,userRoutes.getUserInfo)
+router.route('/users/:id')
+    .get(userAuthentication() ,userController.getUserInfo)
+
+router.route('/users/roles/:role')
+    .get(userAuthentication(),userController.getUsersByRole)
+
+router.route('/users/:id')
+    .patch(userAuthentication(),userController.editUser)
+
+
 
 module.exports = router

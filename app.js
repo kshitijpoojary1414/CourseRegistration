@@ -2,12 +2,9 @@ const express = require('express')
 // const database = require('./database')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const userRoutes = require("./routes/user")
 require('dotenv').config()
-
 // Express
 const app = express()
-
 // Middleware
 app.use(cors({ credentials: true }))
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -16,7 +13,16 @@ const multer = require('multer')
 const upload = multer({dest: './images'})
 const path = require('path')
 app.use(express.static(path.join(__dirname, 'images')))
+
+const userRoutes = require("./routes/user")
+const authRoutes = require("./routes/auth")
+const courseRoutes = require("./routes/courses")
+const courseRegistrationRoutes = require("./routes/course-registrations")
+
 app.use(userRoutes)
+app.use(authRoutes)
+app.use(courseRoutes)
+app.use(courseRegistrationRoutes)
 // const auth = app.use(require('./controllers/auth'))
 
 // Database
