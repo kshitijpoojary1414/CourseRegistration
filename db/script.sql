@@ -21,7 +21,7 @@ CREATE TABLE public.users (
 );
 
 CREATE TABLE public.courses (
-	id serial4 unique not null, 
+	id uuid unique not null, 
 	name varchar(100),
 	subject varchar(225),
 	description varchar(225),
@@ -29,7 +29,7 @@ CREATE TABLE public.courses (
 	end_time varchar(100),
 	start_date varchar(100),
 	end_date varchar(100),
-	teachers text[],
+	teachers uuid[],
 	registered integer default 0,
 	course_limit integer default 60,
 	price integer default 0,
