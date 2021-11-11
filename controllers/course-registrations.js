@@ -7,7 +7,65 @@ const courseRegistrationQueries = require("../queries/course-registrations")
 const { Validations, Operations } = require("../utils")
 const { ROLES } = require("../constants/roles")
 
-async function addCourseRegistration (req, res) {
+async function addCourseRegistration (req) {
+
+  try {
+    const user_id = req.user_id
+    console.log(req)
+    const reqBody = {
+      id : Operations.guid(),
+      course_id: req.course_id,
+      user_id: user_id ,
+    }
+
+    const course = await courseQueries.getCourseInfo(reqBody.course_id) 
+
+    if  ( 
+      Validations.isUndefined(course) || 
+      Validations.isEmpty(course)
+    ) {
+      throw "Course Not Found"
+    }
+
+    if (course[0].registered == course[0].course_limit) {
+      throw "Course is Full"
+    }
+
+    const courseReg = await courseRegistrationQueries.fetchCourseRegInfo(
+      reqBody.user_id,
+      reqBody.course_id
+    )
+
+    console.log(courseReg)
+
+    if (
+      !Validations.isEmpty(courseReg)
+    ) {
+      throw "Already Registered for this course"
+    }
+
+    await courseRegistrationQueries.addCourseRegistration(reqBody)
+
+    await courseQueries.updateCourseInfo(reqBody.course_id, {
+      registered : course[0].registered + 1
+    })
+
+    return {
+      message: "Registered Successfully"
+    };
+
+  } catch( error ) {
+    console.log(error)
+    // return res.status(500).send("Internal Server Error");
+    return {
+      errors: true,
+      errorMessage: error
+    }
+  }
+
+};
+
+async function addMultipleRegistrations (req, res) {
 
   try {
     const { body } = req
@@ -25,61 +83,33 @@ async function addCourseRegistration (req, res) {
         })
     }
 
-    const reqBody = {
-      id : Operations.guid(),
-      course_id: body.course_id,
-      user_id: user_id ,
-    }
-
-    const course = await courseQueries.getCourseInfo(reqBody.course_id) 
-
-    if  ( 
-      Validations.isUndefined(course) || 
-      Validations.isEmpty(course)
-    ) {
-      return res.status(404).json({
-        message : "Course Not Found"
-      })
-    }
-
-    if (course[0].registered == course[0].course_limit) {
-      return res.status(414).json({
-        message : "Course is full"
-      })
-    }
-
-    const courseReg = await courseRegistrationQueries.fetchCourseRegInfo(
-      reqBody.user_id,
-      reqBody.course_id
-    )
-
-    console.log(courseReg)
-
-    if (
-      !Validations.isEmpty(courseReg)
-    ) {
-      return res.status(414).json({
-        message : "Already registered for this course"
-      })
-    }
-
-    await courseRegistrationQueries.addCourseRegistration(reqBody)
-
-    await courseQueries.updateCourseInfo(reqBody.course_id, {
-      registered : course[0].registered + 1
+    promises = body.course_id.map(
+      async course_id => {
+        return await addCourseRegistration({user_id, course_id})
     })
 
-    res.status(200).json({
-      message: "Registered Successfully"
-    });
+    const ans = await Promise.all(promises)
+
+    const hasError = ans.find( a => a.errors)
+    
+    if(Validations.isDefined(hasError)) {
+      return res.status(414).json({
+        'message' : "Some courses could not be added"
+      })
+    }
+
+    return res.status(200).json({
+      message: 'Successfully registered for courses'
+    })
 
   } catch( error ) {
     console.log(error)
-    res.status(500).send("Internal Server Error");
+    return res.status(500).send("Internal Server Error");
   }
 
 };
 
 module.exports = {
     addCourseRegistration,
+    addMultipleRegistrations
 };

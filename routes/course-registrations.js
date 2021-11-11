@@ -6,6 +6,6 @@ var courseRegistrationController = require('../controllers/course-registrations'
 
 
 router.route('/course-registrations')
-    .post(userAuthentication(),courseRegistrationController.addCourseRegistration);
+    .post(userAuthentication(),courseRegistrationController.addMultipleRegistrations);
 
 module.exports = router

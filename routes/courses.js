@@ -7,7 +7,7 @@ var coursesController = require('../controllers/courses')
     
 
 router.route('/courses')
-    .get(coursesController.getCourses);
+    .get(userAuthentication(),coursesController.getCourses);
 
 router.route('/courses')
     .post(userAuthentication(),coursesController.addCourse);

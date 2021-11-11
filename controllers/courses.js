@@ -11,29 +11,21 @@ async function getCourses (req, res) {
   try {
     const { body } = req
     const { email } = body
-    const { user_id } = req.headers 
-    
-    // const user = await userQueries.findUserById(user_id)
-
-    // if (      
-    //     Validations.isEmpty(user) ||
-    //     Validations.isUndefined(user)
-    // ) {
-    //     return res.status(401).json({
-    //         message : "Unauthorized action"
-    //     })
-    // }
+    const { user_id } = req 
+    console.log("user_id", user_id)
 
     let courses = await courseQueries.getCourses()
     console.log(courses)
     courses = courses.map(
-        course => {
+        async course => {
             console.log(course)
             const {
                 start_date,days,start_time,end_time,end_date, ...courses2
             } = course 
 
             const { registered, course_limit, ...courses3 } = courses2
+            const students = await courseQueries.getRegisteredStudents(course.id)
+            console.log("Students",students,user_id)
             return {
                 schedule : {
                     startTime : start_time,
@@ -46,10 +38,13 @@ async function getCourses (req, res) {
                     limit : course_limit,
                     registered
                 },
+                hasRegistered :students.find( student => student.id === (user_id)) ? true : false,
                 ...courses3
             }
         }
     )
+
+    courses = await Promise.all(courses)
 
     res.status(200).send(courses);
 
@@ -170,7 +165,7 @@ async function getCourseInfo (req, res) {
      }
         
       if (user.role === ROLES.STUDENT) {
-        courses[0].hasRegistered = students.find( student => student.id === Number(user_id)) ? true : false
+        courses[0].hasRegistered = students.find( student => student.id === (user_id)) ? true : false
       }
 
       console.log(courses)
