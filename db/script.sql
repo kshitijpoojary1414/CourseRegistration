@@ -17,7 +17,8 @@ CREATE TABLE public.users (
 	password varchar(100) default true ,
 	is_active bool default true, 
 	created_at timestamptz default now(),
-	updated_at timestamptz
+	updated_at timestamptz,
+	department_id uuid not null 
 );
 
 CREATE TABLE public.courses (
@@ -36,7 +37,8 @@ CREATE TABLE public.courses (
 	days text[],
 	is_active bool default true, 
 	created_at timestamptz default now(),
-	updated_at timestamptz
+	updated_at timestamptz,
+	department_id uuid not null
 
 );
 
