@@ -6,6 +6,7 @@ const { Validations } = require("../utils")
 const { ROLES } = require("../constants/roles")
 const courseRegQueries = require("../queries/course-registrations")
 const { Operations } = require("../utils/operations")
+const courseQueries = require("../queries/courses")
 
 async function loginUser (req, res) {
 
@@ -195,7 +196,17 @@ async function getUserInfo (req, res)  {
       )
     }
 
-    const courses = await courseRegQueries.getCoursesForUser(user_id)
+    var courses = []
+    console.log(response)
+    if (response[0].role === ROLES.STUDENT) {
+      courses = await courseRegQueries.getCoursesForUser(user_id)
+    }
+
+    if(response[0].role === ROLES.TEACHER) {
+      courses = await courseRegQueries.findCoursesForTeacher(user_id)
+      courses = courses.rows
+      console.log(courses)
+    }
 
     return res.status(200).json(
       {
@@ -231,12 +242,48 @@ async function getUsersByRole (req, res)  {
 
     const response = await userQueries.getUsersByRole(role) 
 
+    console.log(response)
+
+    let users = response
+
+    if (role === ROLES.TEACHER) {
+        //Find courses by teacher
+        var teachers = response.map(
+          async teacher => {
+            var courses = await courseRegQueries.findCoursesForTeacher(teacher.id)
+            console.log(courses)
+            return {
+              ...teacher,
+              courses: courses.rows
+            }
+          })
+        users = await Promise.all(teachers)
+        
+    }
+
+    if (role === ROLES.STUDENT) {
+      //Find courses by teacher
+      var students = response.map(
+        async student => {
+          var courses = await courseRegQueries.getCoursesForStudent(student.id)
+          console.log(courses,student)
+          return {
+            ...student,
+            courses: courses
+          }
+        })
+      users = await Promise.all(students)
+      
+  }
+
+    // response.courses= courses 
+
     return res.status(200).json({
-      users : response
+      users 
     })
   } catch ( error ) {
       console.log(error)
-      res.status(500).send("Internal Server Error")
+      return res.status(500).send("Internal Server Error")
   }
 
 }

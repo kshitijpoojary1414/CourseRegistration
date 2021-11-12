@@ -23,9 +23,26 @@ const getCoursesForUser = (user_id) => {
     .select("*")
 }
 
+const findCoursesForTeacher = (teacher_id) => {
+    // return db('public.courses').where(teacher_id,'teacher')
+    return db.raw(`select * from courses where '${teacher_id}'=ANY(teachers)`)
+}
+
+const getCoursesForStudent = (user_id) => {
+    return db.select("*")
+    .from("courseregistrations")
+    .where({
+        "courseregistrations.user_id": user_id
+    })
+    .rightJoin('courses', 'courses.id', 'courseregistrations.course_id')
+    .select('*')
+}
+
 
 module.exports = {
     addCourseRegistration,
     fetchCourseRegInfo,
-    getCoursesForUser
+    getCoursesForUser,
+    findCoursesForTeacher,
+    getCoursesForStudent
 }

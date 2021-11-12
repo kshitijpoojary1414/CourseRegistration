@@ -5,6 +5,7 @@ const userQueries = require("../queries/users")
 const courseQueries = require("../queries/courses")
 const { Validations, Operations } = require("../utils")
 const { ROLES } = require("../constants/roles")
+const Dayjs = require("dayjs")
 
 async function getCourses (req, res) {
 
@@ -16,6 +17,7 @@ async function getCourses (req, res) {
 
     let courses = await courseQueries.getCourses()
     console.log(courses)
+
     courses = courses.map(
         async course => {
             console.log(course)
@@ -39,6 +41,7 @@ async function getCourses (req, res) {
                     registered
                 },
                 hasRegistered :students.find( student => student.id === (user_id)) ? true : false,
+                students,
                 ...courses3
             }
         }
@@ -77,18 +80,25 @@ async function addCourse (req, res) {
         name : body.name,
         subject: body.subject,
         description :body.description,
-        start_time : body.start_time,
-        end_time : body.end_time,
-        start_date : body.start_date,
-        end_date : body.end_date,
-        teachers : body.teachers,
-        days: body.days
+        start_time : `${Dayjs(body.schedule.startTime).hour()}:${Dayjs(body.schedule.minute).minute()}`,
+        end_time : `${Dayjs(body.schedule.startTime).hour()}:${Dayjs(body.schedule.minute).minute()}`,
+        start_date : Dayjs(body.schedule.startDate).format('DD/MM/YYYY'),
+        end_date : Dayjs(body.schedule.endDate).format('DD/MM/YYYY'),
+        teachers : body.teachers.map( teacher => {return teacher.id}),
+        days: body.schedule.days,
+        registered : Math.abs(body.registration.registered),
+        course_limit : Math.abs(body.registration.limit),
+        price: body.price
       }
 
-      await courseQueries.addCourse(course) 
-  
-      res.status(200).json({
-          message: "Course added successfully"
+      console.log(course)
+
+      const resp = await courseQueries.addCourse(course) 
+      
+      console.log(resp)
+      return res.status(200).json({
+          message: "Course added successfully",
+          data: resp[0]
       });
   
     } catch( error ) {
@@ -138,7 +148,7 @@ async function getCourseInfo (req, res) {
           teachers.push(teacher)
       }
 
-      const students = await courseQueries.getRegisteredStudents(course_id)
+      var students = await courseQueries.getRegisteredStudents(course_id)
 
       console.log(courses)
       courses[0].students = students

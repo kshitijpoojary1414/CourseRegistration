@@ -24,9 +24,11 @@ const getRegisteredStudents = (course_id) => {
     }).select('*')
 }
 
+
 const addCourse = (course) => {
     return db.from('public.courses')
               .insert(course)
+              .returning("*")
 }
 
 const updateCourseInfo = (course_id, updateBody) => {
