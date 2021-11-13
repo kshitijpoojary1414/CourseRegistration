@@ -51,3 +51,14 @@ CREATE TABLE public.courseregistrations (
 	updated_at timestamptz
 
 );
+
+CREATE TABLE public.grades (
+	id uuid unique not null, 
+	course_id uuid,
+	user_id uuid,
+	grades varchar default '-',
+	is_active bool default true, 
+	created_at timestamptz default now(),
+	updated_at timestamptz
+
+);
