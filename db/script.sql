@@ -51,3 +51,12 @@ CREATE TABLE public.courseregistrations (
 	updated_at timestamptz
 
 );
+
+CREATE TABLE public.departments (
+	id uuid unique not null, 
+	name varchar(100),
+	code varchar(100),
+	is_active bool default true, 
+	created_at timestamptz default now(),
+	updated_at timestamptz
+);
