@@ -15,6 +15,7 @@ router.route('/courses')
 router.route('/courses/:id')
     .get(userAuthentication(),coursesController.getCourseInfo);
 
+
     
 
 

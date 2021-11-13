@@ -6,6 +6,7 @@ const courseQueries = require("../queries/courses")
 const { Validations, Operations } = require("../utils")
 const { ROLES } = require("../constants/roles")
 const Dayjs = require("dayjs")
+const deptQueries = require("../queries/departments")
 
 async function getCourses (req, res) {
 
@@ -13,10 +14,13 @@ async function getCourses (req, res) {
     const { body } = req
     const { email } = body
     const { user_id } = req 
-    console.log("user_id", user_id)
+    const {department_id} = req.query 
+
+    if (Validations.isDefined(department_id)) {
+      return await getCoursesByDepartment(req,res)
+    }
 
     let courses = await courseQueries.getCourses()
-    console.log(courses)
 
     courses = courses.map(
         async course => {
@@ -27,7 +31,10 @@ async function getCourses (req, res) {
 
             const { registered, course_limit, ...courses3 } = courses2
             const students = await courseQueries.getRegisteredStudents(course.id)
-            console.log("Students",students,user_id)
+            const department = await deptQueries.getDepartment(course.department_id)
+            const registrationDetails = students.find( student => student.id === (user_id))
+            const hasRegistered = registrationDetails ? true : false 
+
             return {
                 schedule : {
                     startTime : start_time,
@@ -40,12 +47,69 @@ async function getCourses (req, res) {
                     limit : course_limit,
                     registered
                 },
-                hasRegistered :students.find( student => student.id === (user_id)) ? true : false,
+                hasRegistered,
+                registrationDetails: hasRegistered ? registrationDetails.id : "",
                 students,
-                ...courses3
+                ...courses3,
+                department: department[0]
             }
         }
     )
+
+    courses = await Promise.all(courses)
+
+    res.status(200).send(courses);
+
+  } catch( error ) {
+    console.log(error)
+    res.status(500).send("Internal Server Error");
+  }
+
+};
+
+async function getCoursesByDepartment (req, res) {
+
+  try {
+    const { body } = req
+    const { email } = body
+    const { user_id } = req 
+    const { department_id} = req.query
+
+    let courses = await courseQueries.getCoursesByDepartment(department_id)
+
+    courses = courses.map(
+      async course => {
+          console.log(course)
+          const {
+              start_date,days,start_time,end_time,end_date, ...courses2
+          } = course 
+
+          const { registered, course_limit, ...courses3 } = courses2
+          const students = await courseQueries.getRegisteredStudents(course.id)
+          const department = await deptQueries.getDepartment(course.department_id)
+          const registrationDetails = students.find( student => student.id === (user_id))
+          const hasRegistered = registrationDetails ? true : false 
+          console.log(registrationDetails,hasRegistered)
+          return {
+              schedule : {
+                  startTime : start_time,
+                  endTime: end_time,
+                  days : days,
+                  startDate : start_date,
+                  endDate : end_date
+              },
+              registration : {
+                  limit : course_limit,
+                  registered
+              },
+              hasRegistered,
+              registrationDetails: hasRegistered ? registrationDetails.reg_id : "",
+              students,
+              ...courses3,
+              department: department[0]
+          }
+      }
+  )
 
     courses = await Promise.all(courses)
 
@@ -74,7 +138,7 @@ async function addCourse (req, res) {
               message : "Unauthorized action"
           })
       }
-      
+      console.log(body)
       const course = {
         id : Operations.guid(),
         name : body.name,
@@ -88,7 +152,8 @@ async function addCourse (req, res) {
         days: body.schedule.days,
         registered : Math.abs(body.registration.registered),
         course_limit : Math.abs(body.registration.limit),
-        price: body.price
+        price: body.price,
+        department_id : body.department_id
       }
 
       console.log(course)
@@ -219,5 +284,6 @@ async function getCourseInfo (req, res) {
 module.exports = {
     getCourses,
     addCourse,
-    getCourseInfo
+    getCourseInfo,
+    getCoursesByDepartment
 };

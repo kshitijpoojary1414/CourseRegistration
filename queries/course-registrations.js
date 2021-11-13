@@ -35,7 +35,14 @@ const getCoursesForStudent = (user_id) => {
         "courseregistrations.user_id": user_id
     })
     .rightJoin('courses', 'courses.id', 'courseregistrations.course_id')
-    .select('*')
+
+}
+
+const deleteCourseRegistration = (registration_id) => {
+    return db.from('public.courseregistrations')
+              .where({
+                  id : registration_id
+              }).del()
 }
 
 
@@ -44,5 +51,6 @@ module.exports = {
     fetchCourseRegInfo,
     getCoursesForUser,
     findCoursesForTeacher,
-    getCoursesForStudent
+    getCoursesForStudent,
+    deleteCourseRegistration
 }

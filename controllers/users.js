@@ -91,7 +91,8 @@ async function registerUser(req, res) {
       zip_code: body.zip_code,
       phone: body.phone,
       role: ROLES.STUDENT,
-      avatar: body.avatar
+      avatar: body.avatar,
+      department_id: body.department_id
     }
 
     if (req.body.avatar) {
@@ -128,8 +129,7 @@ async function registerUser(req, res) {
     return res.status(200).json({
       token: token,
       data: responseBody
-    }
-    )
+    })
   } catch (error) {
     console.log(error)
     return res.status(500).send("Internal Server Error")

@@ -109,7 +109,43 @@ async function addMultipleRegistrations (req, res) {
 
 };
 
+async function dropCourseRegistrations (req, res) {
+
+  try {
+    const { body } = req
+    const { email } = body
+    const { user_id } = req 
+    const { id : registration_id } = req.params
+    const user = await userQueries.findUserById(user_id)
+
+    if (      
+        Validations.isEmpty(user) ||
+        Validations.isUndefined(user)
+    ) {
+        return res.status(401).json({
+            message : "Unauthorized action"
+        })
+    }
+
+    console.log("REGISTRATION",registration_id)
+
+    const respp = await courseRegistrationQueries.deleteCourseRegistration(registration_id)
+
+    console.log(respp)
+
+    return res.status(200).json({
+      message: 'Successfully dropped the course'
+    })
+
+  } catch( error ) {
+    console.log(error)
+    return res.status(500).send("Internal Server Error");
+  }
+
+};
+
 module.exports = {
     addCourseRegistration,
-    addMultipleRegistrations
+    addMultipleRegistrations,
+    dropCourseRegistrations
 };

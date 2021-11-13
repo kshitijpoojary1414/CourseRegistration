@@ -12,7 +12,16 @@ const createDepartment = (department) => {
                 .returning("*")
 }
 
+const getDepartment = (department_id) => {
+    return db('departments')
+                .where({
+                    id: department_id
+                })
+                .select("*")
+}
+
 module.exports = {
     getDepartments,
-    createDepartment
+    createDepartment,
+    getDepartment
 }

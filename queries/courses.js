@@ -2,26 +2,33 @@ const db = require("../db/db")
 
 const getCourses = () => {
     return db('courses').where({
-        is_active: true        
+        "courses.is_active": true        
+    }).select("*")
+}
+
+const getCoursesByDepartment = (department_id) => {
+    return db('courses').where({
+        "courses.is_active": true,
+        department_id       
     }).select("*")
 }
 
 const getCourseInfo = (course_id) => {
     return db('courses').where({
-        id:course_id,
+        'id':course_id,
         "is_active": true        
     })
     .select("*")
 }
 
 const getRegisteredStudents = (course_id) => {
-    console.log(course_id)
-    return db.select("*")
+    return db.select(["users.*", "courseregistrations.id as reg_id"])
     .from("courseregistrations")
-    .rightJoin('users', 'users.id', 'courseregistrations.user_id')
     .where({
-        course_id
-    }).select('*')
+        "courseregistrations.course_id": course_id
+    })
+    .join('users', 'users.id', 'courseregistrations.user_id')
+    // .select('users.* , courseregistrations.id as')
 }
 
 
@@ -47,4 +54,5 @@ module.exports = {
     getCourseInfo,
     getRegisteredStudents,
     updateCourseInfo,
+    getCoursesByDepartment
 }
