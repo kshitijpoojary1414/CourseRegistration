@@ -18,7 +18,7 @@ CREATE TABLE public.users (
 	is_active bool default true, 
 	created_at timestamptz default now(),
 	updated_at timestamptz,
-	department_id uuid not null 
+	department_id uuid 
 );
 
 CREATE TABLE public.courses (
