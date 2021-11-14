@@ -163,7 +163,27 @@ async function editUser(req, res) {
     }
     // ADD SCHEMA VALIDATION , CANNOT ALLOW NORMAL UPDATE 
 
-    const editRes = await userQueries.editUser(response[0].id, body)
+    console.log(body)
+
+    userBody = {
+      first_name: body.first_name,
+      last_name: body.last_name,
+      middle_name: body.middle_name,
+      email: body.email,
+      phone: body.phone,
+      street_address: body.street_address,
+      city: body.city,
+      state: body.state,
+      country: body.country,
+      zip_code: body.zip_code,
+      phone: body.phone,
+      role: ROLES.STUDENT,
+      avatar: body.avatar,
+      department_id: body.department_id,
+      major_id:body.major_id
+    }
+
+    const editRes = await userQueries.editUser(response[0].id, userBody)
 
     console.log(editRes)
 
