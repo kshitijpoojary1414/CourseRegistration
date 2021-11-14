@@ -27,11 +27,20 @@ const getMajorsByDepartment = (department_id) => {
                 .select("*")
 }
 
+const getMajorById = (major_id) => {
+    return db('majors')
+                .where({
+                    id:major_id
+                })
+                .select("*")
+}
+
 
 
 module.exports = {
     getMajorss,
     createMajors,
     getMajors,
-    getMajorsByDepartment
+    getMajorsByDepartment,
+    getMajorById
 }
