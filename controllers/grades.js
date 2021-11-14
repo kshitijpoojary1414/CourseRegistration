@@ -3,6 +3,7 @@ const { email, integer } = require("is");
 const jwt = require("jsonwebtoken");
 const userQueries = require("../queries/users")
 const courseQueries = require("../queries/courses")
+const courseRegistrationQueries = require("../queries/course-registrations")
 const deptQueries = require("../queries/departments")
 const gradesQueries = require("../queries/grades")
 const { Validations, Operations } = require("../utils")
@@ -14,21 +15,41 @@ async function getGrades (req, res) {
 
   try {
     const { body } = req
-    const { user_id } = req 
-    const { id: course_id } = req.params
-    console.log("user_id", user_id)
-    console.log(course_id)
+    // const { user_id } = req 
+    const { course_id } = req.query
 
-    let grades = await gradesQueries.getGrades(course_id)
+    let courseRegistrationInfo = await courseRegistrationQueries.fetchCourseRegInfoByCourse(course_id)
+    
     if (
-        Validations.isUndefined(grades) ||
-        Validations.isEmpty(grades)
+      Validations.isUndefined(courseRegistrationInfo) ||
+      Validations.isEmpty(courseRegistrationInfo)
+    ) {
+      return res.status(404).json({
+        message: "Course not found"
+      })
+    }
+    for(i = 0; i< courseRegistrationInfo.length; i++){
+      const { user_id } = courseRegistrationInfo[i]
+      let userInfo = await userQueries.findUserById(user_id)
+      const{first_name,middle_name, last_name} = userInfo[0]  
+      courseRegistrationInfo[i].first_name = first_name
+      courseRegistrationInfo[i].middle_name = middle_name
+      courseRegistrationInfo[i].last_name = last_name
+      let gradesInfo = await gradesQueries.getGrade(user_id,course_id)
+      const{grades, comments } = gradesInfo[0]
+      courseRegistrationInfo[i].grades = grades
+      courseRegistrationInfo[i].comments = comments
+  }
+
+    if (
+        Validations.isUndefined(courseRegistrationInfo) ||
+        Validations.isEmpty(courseRegistrationInfo)
     ) {
       return res.status(404).json({
           message: "Course not found"
       })
     }
-    res.status(200).send(grades);
+    res.status(200).send(courseRegistrationInfo);
 
   } catch( error ) {
     console.log(error)
@@ -36,34 +57,45 @@ async function getGrades (req, res) {
   }
 };
 
-async function addGrades (req, res) {
 
+async function addGrades (req, res) {
   try {
     const { body } = req
     // const body = req.body
-    const { user_id: creator } = req 
+    const { createdby: creator } = req 
     // const creator = req.user_id
     // const { id: course_id } = req.params
 
-
-
-    const { course_id, user_id, grades} = body
-
-    let grade = await gradesQueries.getGrade(user_id,course_id)
-
-    if (!Validations.isEmpty(grade)) {
-      return res.status(414).json({
-        message: "Grade Already exists"
-      })
-    }
-
+    const { course_id, user_id, grades, comments} = body
 
     const gradeBody = {
       id : Operations.guid(),
       course_id,
       user_id,
       grades,
+      comments,
       createdBy: creator
+    }
+
+    try {
+      let grade = await gradesQueries.getGrade(user_id,course_id)
+      if (!Validations.isEmpty(grade)) {
+        await gradesQueries.updateGrades(gradeBody)
+        gradeBody.message = "Grades updated for user"
+        return res.status(200).json(gradeBody);
+      }
+    }
+    catch(err) {
+    }
+
+    try {
+        if(!grade.createdBy == creator){
+        return res.status(200).json({
+          message : "This Teacher is not authorized to grade this course",
+          flag : "Rejected"
+        })
+      }
+    } catch (error) { 
     }
 
     await gradesQueries.addGrades(gradeBody)
@@ -76,8 +108,8 @@ async function addGrades (req, res) {
     });
   }
 };
+
 module.exports = {
     getGrades,
     addGrades
-    
 };

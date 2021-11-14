@@ -32,6 +32,7 @@ const editUser = (id, updateBody) => {
     })
 }
 
+
 module.exports = {
     findUserByEmail,
     createUser,

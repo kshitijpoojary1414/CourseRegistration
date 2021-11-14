@@ -6,11 +6,10 @@ var grdesController = require('../controllers/grades')
 
     
 
-router.route('/grades/:id')
+router.route('/grades/')
     .get(userAuthentication(),grdesController.getGrades);
 
 router.route('/grades/')
-    .post(userAuthentication(),grdesController.addGrades)
-
+    .post(userAuthentication(),grdesController.addGrades);
 
 module.exports = router
