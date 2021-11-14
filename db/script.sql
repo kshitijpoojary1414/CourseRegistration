@@ -58,5 +58,6 @@ CREATE TABLE public.departments (
 	code varchar(100),
 	is_active bool default true, 
 	created_at timestamptz default now(),
-	updated_at timestamptz
+	updated_at timestamptz,
+	created_by uuid 
 );
