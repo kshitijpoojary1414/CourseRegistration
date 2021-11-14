@@ -27,6 +27,8 @@ const getMajorsByDepartment = (department_id) => {
                 .select("*")
 }
 
+
+
 module.exports = {
     getMajorss,
     createMajors,
