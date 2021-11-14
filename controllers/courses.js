@@ -138,7 +138,7 @@ async function addCourse (req, res) {
               message : "Unauthorized action"
           })
       }
-      console.log(body)
+
       const course = {
         id : Operations.guid(),
         name : body.name,
@@ -153,7 +153,7 @@ async function addCourse (req, res) {
         registered : Math.abs(body.registration.registered),
         course_limit : Math.abs(body.registration.limit),
         price: body.price,
-        department_id : body.department_id
+        major_id : body.major_id
       }
 
       console.log(course)
