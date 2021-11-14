@@ -15,4 +15,7 @@ router.route('/majors')
 router.route('/majors/department')
     .get(majorsController.getMajorsByDepartment);
 
+router.route('/majors/:id')
+    .get(majorsController.getMajorById);
+
 module.exports = router

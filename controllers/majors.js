@@ -68,6 +68,24 @@ async function createMajor (req, res) {
     }
   };
 
+  async function getMajorById (req, res) {
+    try {
+      const { body } = req
+      const { id } = req.params
+
+      let major = await majorQueries.getMajorById(id)
+
+      let courses = await courseQueries.getCoursesByMajor(id)
+      // let students = await userQueries.getCoursesByMajor
+  
+      res.status(200).json({...major[0]} );
+  
+    } catch( error ) {
+      console.log(error)
+      return res.status(500).json("Internal Server Error");
+    }
+  };
+
 
   
 
@@ -75,5 +93,6 @@ async function createMajor (req, res) {
 module.exports = {
     getMajors,
     createMajor,
-    getMajorsByDepartment
+    getMajorsByDepartment,
+    getMajorById
 };
