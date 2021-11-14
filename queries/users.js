@@ -32,10 +32,19 @@ const editUser = (id, updateBody) => {
     })
 }
 
+const getUserByMajorAndRole = (Info) => {
+    return db.raw(`
+    select * from users where major_id='${Info.major_id}' and role = '${Info.role}';
+    `)
+}
+
+
+
 module.exports = {
     findUserByEmail,
     createUser,
     findUserById,
     getUsersByRole,
-    editUser
+    editUser,
+    getUserByMajorAndRole
 }

@@ -69,7 +69,7 @@ async function addMultipleRegistrations (req, res) {
 
   try {
     const { body } = req
-    const { email } = body
+    // const { email } = body
     const { user_id } = req 
     
     const user = await userQueries.findUserById(user_id)

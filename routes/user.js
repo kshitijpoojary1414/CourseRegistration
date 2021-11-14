@@ -22,5 +22,4 @@ router.route('/users/:id')
     .patch(userAuthentication(),userController.editUser)
 
 
-
 module.exports = router

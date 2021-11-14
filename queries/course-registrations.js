@@ -45,6 +45,14 @@ const deleteCourseRegistration = (registration_id) => {
               }).del()
 }
 
+const fetchCourseRegInfoByCourse = (course_id) => {
+    return db.select("*")
+            .from('public.courseregistrations')
+            .where({
+                course_id
+            })
+}
+
 
 module.exports = {
     addCourseRegistration,
@@ -52,5 +60,6 @@ module.exports = {
     getCoursesForUser,
     findCoursesForTeacher,
     getCoursesForStudent,
-    deleteCourseRegistration
+    deleteCourseRegistration,
+    fetchCourseRegInfoByCourse
 }
