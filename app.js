@@ -21,6 +21,7 @@ const courseRegistrationRoutes = require("./routes/course-registrations")
 const departmentRoutes = require("./routes/departments")
 const gradeRoutes = require("./routes/grades")
 const majorRouters = require("./routes/majors")
+const teachersRouters = require("./routes/teachers")
 
 
 
@@ -32,6 +33,7 @@ app.use(courseRegistrationRoutes)
 app.use(departmentRoutes)
 app.use(gradeRoutes)
 app.use(majorRouters)
+app.use(teachersRouters)
 // const auth = app.use(require('./controllers/auth'))
 
 // Database

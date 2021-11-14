@@ -291,8 +291,6 @@ async function getUsersByRole(req, res) {
 
 
 
-
-
 module.exports = {
   loginUser,
   registerUser,

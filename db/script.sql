@@ -50,7 +50,6 @@ CREATE TABLE public.courseregistrations (
 	is_active bool default true, 
 	created_at timestamptz default now(),
 	updated_at timestamptz
-
 );
 
 CREATE TABLE public.departments (

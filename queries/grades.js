@@ -10,7 +10,7 @@ const getGrades = (course_id) => {
 }
 
 const addGrades = (grade) => {
-    const fields = `'${grade.id}', '${grade.course_id}','${grade.user_id}','${grade.grades}','${grade.comments}','${grade.createdBy}'`
+    const fields = `'${grade.id}', '${grade.course_id}','${grade.user_id}','${grade.grades}','${grade.comments}','${grade.createdby}'`
     return db.raw(`
        Insert into grades (id,course_id,user_id,grades,comments,createdBy) values(${fields})
     `)

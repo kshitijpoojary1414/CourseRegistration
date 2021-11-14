@@ -62,7 +62,7 @@ async function addGrades (req, res) {
   try {
     const { body } = req
     // const body = req.body
-    const { createdby: creator } = req 
+    const { createdby } = body 
     // const creator = req.user_id
     // const { id: course_id } = req.params
 
@@ -74,7 +74,24 @@ async function addGrades (req, res) {
       user_id,
       grades,
       comments,
-      createdBy: creator
+      createdby
+    }
+
+    const response = await userQueries.findUserById(createdby)
+
+    if (
+      Validations.isUndefined(response) ||
+      Validations.isEmpty(response)
+    ) {
+      return res.status(404).json(
+        { message: "Grader Not Found" }
+      )
+    }
+
+    if (response[0].role !== ROLES.TEACHER) {
+      return res.status(404).json(
+        { message: "User is not authorized to Grade this course" }
+      )
     }
 
     try {
