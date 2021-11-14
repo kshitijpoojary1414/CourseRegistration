@@ -13,6 +13,6 @@ router.route('/majors')
     .post(userAuthentication(),majorsController.createMajor);
 
 router.route('/majors/department')
-    .get(userAuthentication(),majorsController.getMajorsByDepartment);
+    .get(majorsController.getMajorsByDepartment);
 
 module.exports = router
