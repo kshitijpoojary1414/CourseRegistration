@@ -15,10 +15,11 @@ CREATE TABLE public.users (
 	phone int8,
 	role varchar(100) default false,
 	password varchar(100) default true ,
-	is_active bool default true, 
+	is_active bool default truw, 
 	created_at timestamptz default now(),
 	updated_at timestamptz,
-	department_id uuid not null 
+	department_id uuid,
+	major_id uuid
 );
 
 CREATE TABLE public.courses (
@@ -38,7 +39,7 @@ CREATE TABLE public.courses (
 	is_active bool default true, 
 	created_at timestamptz default now(),
 	updated_at timestamptz,
-	department_id uuid not null
+	major_id uuid not null
 
 );
 
@@ -52,13 +53,23 @@ CREATE TABLE public.courseregistrations (
 
 );
 
-CREATE TABLE public.grades (
+CREATE TABLE public.departments (
 	id uuid unique not null, 
-	course_id uuid,
-	user_id uuid,
-	grades varchar default '-',
+	name varchar(100),
+	code varchar(100),
 	is_active bool default true, 
 	created_at timestamptz default now(),
-	updated_at timestamptz
+	updated_at timestamptz,
+	created_by uuid 
+);
 
+CREATE TABLE public.majors (
+	id uuid unique not null, 
+	major_name varchar(100),
+	major_code varchar(100),
+	department_id uuid,
+	maj_min_units integer, 
+	maj_units integer, 
+	created_at timestamptz default now(),
+	updated_at timestamptz,
 );

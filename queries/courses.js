@@ -6,10 +6,10 @@ const getCourses = () => {
     }).select("*")
 }
 
-const getCoursesByDepartment = (department_id) => {
+const getCoursesByMajor = (major_id) => {
     return db('courses').where({
         "courses.is_active": true,
-        department_id       
+        major_id       
     }).select("*")
 }
 
@@ -54,5 +54,5 @@ module.exports = {
     getCourseInfo,
     getRegisteredStudents,
     updateCourseInfo,
-    getCoursesByDepartment
+    getCoursesByMajor
 }

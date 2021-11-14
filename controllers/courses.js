@@ -6,7 +6,9 @@ const courseQueries = require("../queries/courses")
 const { Validations, Operations } = require("../utils")
 const { ROLES } = require("../constants/roles")
 const Dayjs = require("dayjs")
-const deptQueries = require("../queries/departments")
+const deptQueries = require("../queries/departments");
+const majorQueries = require("../queries/majors")
+const { getCoursesForStudent } = require("../queries/course-registrations");
 
 async function getCourses (req, res) {
 
@@ -14,10 +16,10 @@ async function getCourses (req, res) {
     const { body } = req
     const { email } = body
     const { user_id } = req 
-    const {department_id} = req.query 
+    const {major_id} = req.query 
 
-    if (Validations.isDefined(department_id)) {
-      return await getCoursesByDepartment(req,res)
+    if (Validations.isDefined(major_id)) {
+      return await getCoursesByMajor(req,res)
     }
 
     let courses = await courseQueries.getCourses()
@@ -31,7 +33,7 @@ async function getCourses (req, res) {
 
             const { registered, course_limit, ...courses3 } = courses2
             const students = await courseQueries.getRegisteredStudents(course.id)
-            const department = await deptQueries.getDepartment(course.department_id)
+            const major = await majorQueries.getMajors(course.major_id)
             const registrationDetails = students.find( student => student.id === (user_id))
             const hasRegistered = registrationDetails ? true : false 
 
@@ -51,7 +53,7 @@ async function getCourses (req, res) {
                 registrationDetails: hasRegistered ? registrationDetails.id : "",
                 students,
                 ...courses3,
-                department: department[0]
+                major: major[0]
             }
         }
     )
@@ -67,15 +69,15 @@ async function getCourses (req, res) {
 
 };
 
-async function getCoursesByDepartment (req, res) {
+async function getCoursesByMajor (req, res) {
 
   try {
     const { body } = req
     const { email } = body
     const { user_id } = req 
-    const { department_id} = req.query
+    const { major_id} = req.query
 
-    let courses = await courseQueries.getCoursesByDepartment(department_id)
+    let courses = await courseQueries.getCoursesByMajor(major_id)
 
     courses = courses.map(
       async course => {
@@ -86,7 +88,8 @@ async function getCoursesByDepartment (req, res) {
 
           const { registered, course_limit, ...courses3 } = courses2
           const students = await courseQueries.getRegisteredStudents(course.id)
-          const department = await deptQueries.getDepartment(course.department_id)
+          const major = await majorQueries.getMajors(course.major_id)
+          console.log("Major",major,course.major_id)
           const registrationDetails = students.find( student => student.id === (user_id))
           const hasRegistered = registrationDetails ? true : false 
           console.log(registrationDetails,hasRegistered)
@@ -106,7 +109,7 @@ async function getCoursesByDepartment (req, res) {
               registrationDetails: hasRegistered ? registrationDetails.reg_id : "",
               students,
               ...courses3,
-              department: department[0]
+              major: major[0]
           }
       }
   )
@@ -138,7 +141,7 @@ async function addCourse (req, res) {
               message : "Unauthorized action"
           })
       }
-      console.log(body)
+
       const course = {
         id : Operations.guid(),
         name : body.name,
@@ -153,7 +156,7 @@ async function addCourse (req, res) {
         registered : Math.abs(body.registration.registered),
         course_limit : Math.abs(body.registration.limit),
         price: body.price,
-        department_id : body.department_id
+        major_id : body.major_id
       }
 
       console.log(course)
@@ -285,5 +288,5 @@ module.exports = {
     getCourses,
     addCourse,
     getCourseInfo,
-    getCoursesByDepartment
+    getCoursesByMajor
 };

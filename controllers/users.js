@@ -92,7 +92,8 @@ async function registerUser(req, res) {
       phone: body.phone,
       role: ROLES.STUDENT,
       avatar: body.avatar,
-      department_id: body.department_id
+      department_id: body.department_id,
+      major_id:body.major_id
     }
 
     if (req.body.avatar) {

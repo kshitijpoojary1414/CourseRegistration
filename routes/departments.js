@@ -7,7 +7,7 @@ var departmentsController = require('../controllers/departments')
     
 
 router.route('/departments')
-    .get(userAuthentication(),departmentsController.getDepartments);
+    .get(departmentsController.getDepartments);
 
 router.route('/departments')
     .post(userAuthentication(),departmentsController.createDepartment);

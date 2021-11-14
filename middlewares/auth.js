@@ -22,11 +22,24 @@ function userAuthorization(permittedRoles = []) {
             Validations.isEmpty(user)
         ) {
             throw "Invalid user ID"
+            // res.status(401).json({
+            //     message: "Invalid user id"
+            // })
+        }
+
+        if(!user.is_active) {
+            // res.status(414).json({
+            //     message: "User has been deactivated"
+            // })
+            throw "User has been deactivated"
         }
 
         if (!Validations.isEmpty(permittedRoles)) {
             if (!permittedRoles.includes(user.role)) {
-                throw "Not Authorized"  
+                // res.status(401).json({
+                //     message: "Unauthorized action"
+                // })
+                throw "Unauthorized action"
             }
         }
 
