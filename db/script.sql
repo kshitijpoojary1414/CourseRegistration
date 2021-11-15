@@ -72,3 +72,17 @@ CREATE TABLE public.majors (
 	created_at timestamptz default now(),
 	updated_at timestamptz,
 );
+
+
+create table grades
+(
+    id uuid not null constraint grades_id_key unique,
+    course_id  uuid,
+    user_id    uuid,
+    grades     varchar                  default '-'::character varying,
+    is_active  boolean                  default true,
+    created_at timestamp with time zone default now(),
+    updated_at timestamp with time zone,
+    createdby  uuid,
+    comments   varchar
+);
