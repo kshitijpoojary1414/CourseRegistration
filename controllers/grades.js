@@ -69,8 +69,6 @@ async function addGrades (req, res) {
     const { body } = req
     // const body = req.body
     const { createdby } = body 
-    // const creator = req.user_id
-    // const { id: course_id } = req.params
 
     const { course_id, user_id, grades, comments} = body
 
