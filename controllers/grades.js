@@ -36,9 +36,15 @@ async function getGrades (req, res) {
       courseRegistrationInfo[i].middle_name = middle_name
       courseRegistrationInfo[i].last_name = last_name
       let gradesInfo = await gradesQueries.getGrade(user_id,course_id)
-      const{grades, comments } = gradesInfo[0]
+      console.log("ASK ",gradesInfo)
+      if(Validations.isEmpty(gradesInfo)){
+        courseRegistrationInfo[i].grades = "-"
+        courseRegistrationInfo[i].comments = "-"
+      }else{
+        const{grades, comments } = gradesInfo[0]
       courseRegistrationInfo[i].grades = grades
       courseRegistrationInfo[i].comments = comments
+      }
   }
 
     if (
