@@ -76,9 +76,18 @@ async function createMajor (req, res) {
       let major = await majorQueries.getMajorById(id)
 
       let courses = await courseQueries.getCoursesByMajor(id)
-      // let students = await userQueries.getCoursesByMajor
+      let students = await userQueries.getUserByMajorAndRole({major_id:id, role: ROLES.STUDENT})
+      let teachers = await userQueries.getUserByMajorAndRole({major_id:id, role: ROLES.TEACHER})
+
+      
+
   
-      res.status(200).json({...major[0]} );
+      res.status(200).json({
+        ...major[0],
+        students: students.rows,
+        teachers: teachers.rows,
+        courses
+      });
   
     } catch( error ) {
       console.log(error)
