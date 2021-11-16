@@ -15,14 +15,14 @@ async function getDepartments (req, res) {
     const { body } = req
     const { email } = body
     const { user_id } = req 
-    console.log("user_id", user_id)
+    //console.log("user_id", user_id)
 
     let departments = await deptQueries.getDepartments()
 
     res.status(200).send(departments);
 
   } catch( error ) {
-    console.log(error)
+    //console.log(error)
     res.status(500).send("Internal Server Error");
   }
 };
@@ -44,7 +44,7 @@ async function createDepartment (req, res) {
       res.status(200).send(departments );
   
     } catch( error ) {
-      console.log(error)
+      //console.log(error)
       return res.status(500).send("Internal Server Error");
     }
   };

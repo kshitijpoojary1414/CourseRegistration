@@ -6,11 +6,11 @@ const { Validations } = require("../utils")
 
 async function postAuthorize(req, res)  {
     try {
-        console.log("Request",req.headers,req.body)
+        //console.log("Request",req.headers,req.body)
         let token = req.headers.authorization.replace('Bearer ', '')
 
         let userInfo = jwt.verify(token, process.env.TOKEN_SECRET)
-        console.log(userInfo)
+        //console.log(userInfo)
         const data = await userQueries.findUserById(userInfo.id);
 
         res.status(200).json({

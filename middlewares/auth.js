@@ -8,7 +8,7 @@ function userAuthorization(permittedRoles = []) {
     return async (req, res, next) => {
         try {
           const token = req.headers.authorization;
-          console.log(req.headers,token,process.env.TOKEN_SECRET)
+          //console.log(req.headers,token,process.env.TOKEN_SECRET)
 
           const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
           const { id : userId } = decodedToken;
@@ -16,7 +16,7 @@ function userAuthorization(permittedRoles = []) {
           let user = await findUserById(userId)
         
           user = user[0]
-          console.log("Token",user)
+          //console.log("Token",user)
         if (
             Validations.isUndefined(user) || 
             Validations.isEmpty(user)
@@ -48,7 +48,7 @@ function userAuthorization(permittedRoles = []) {
           
 
         } catch (error) {
-            console.log(error)
+            //console.log(error)
             return res.status(401).json({
             error: new Error('Invalid request!')
           });

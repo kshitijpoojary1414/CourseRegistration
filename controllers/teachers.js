@@ -30,7 +30,7 @@ async function getCoursesByTeacher (req, res) {
     res.status(200).send(coursesInfo.rows);
 
   } catch( error ) {
-    console.log(error)
+    //console.log(error)
     res.status(500).send("Internal Server Error",error);
   }
 };
@@ -47,7 +47,7 @@ async function getTeachersByMajors (req, res) {
         role: "teacher"
       }
 
-      console.log(Info)
+      //console.log(Info)
       let teacherInfo = await userQueries.getUserByMajorAndRole(Info)
       
       if (
@@ -62,7 +62,7 @@ async function getTeachersByMajors (req, res) {
       res.status(200).send(teacherInfo.rows);
   
     } catch( error ) {
-      console.log(error)
+      //console.log(error)
       res.status(500).send("Internal Server Error");
     }
   };
@@ -79,7 +79,7 @@ async function getTeachersByMajors (req, res) {
         role: "student"
       }
 
-      console.log(Info)
+      //console.log(Info)
       let teacherInfo = await userQueries.getUserByMajorAndRole(Info)
       
       if (
@@ -94,7 +94,7 @@ async function getTeachersByMajors (req, res) {
       res.status(200).send(teacherInfo.rows);
   
     } catch( error ) {
-      console.log(error)
+      //console.log(error)
       res.status(500).send("Internal Server Error");
     }
   };

@@ -11,7 +11,7 @@ async function addCourseRegistration (req) {
 
   try {
     const user_id = req.user_id
-    console.log(req)
+    //console.log(req)
     const reqBody = {
       id : Operations.guid(),
       course_id: req.course_id,
@@ -36,7 +36,7 @@ async function addCourseRegistration (req) {
       reqBody.course_id
     )
 
-    console.log(courseReg)
+    //console.log(courseReg)
 
     if (
       !Validations.isEmpty(courseReg)
@@ -55,7 +55,7 @@ async function addCourseRegistration (req) {
     };
 
   } catch( error ) {
-    console.log(error)
+    //console.log(error)
     // return res.status(500).send("Internal Server Error");
     return {
       errors: true,
@@ -103,7 +103,7 @@ async function addMultipleRegistrations (req, res) {
     })
 
   } catch( error ) {
-    console.log(error)
+    //console.log(error)
     return res.status(500).send("Internal Server Error");
   }
 
@@ -127,18 +127,18 @@ async function dropCourseRegistrations (req, res) {
         })
     }
 
-    console.log("REGISTRATION",registration_id)
+    //console.log("REGISTRATION",registration_id)
 
     const respp = await courseRegistrationQueries.deleteCourseRegistration(registration_id)
 
-    console.log(respp)
+    //console.log(respp)
 
     return res.status(200).json({
       message: 'Successfully dropped the course'
     })
 
   } catch( error ) {
-    console.log(error)
+    //console.log(error)
     return res.status(500).send("Internal Server Error");
   }
 

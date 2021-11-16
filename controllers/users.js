@@ -24,7 +24,7 @@ async function loginUser(req, res) {
       })
     }
 
-    console.log(body)
+    //console.log(body)
 
     let response = await userQueries.findUserByEmail(email)
 
@@ -46,12 +46,12 @@ async function loginUser(req, res) {
     response = response[0]
     const tokenBody = { id: response.id, email: response.email, role: response.role }
 
-    console.log(tokenBody)
+    //console.log(tokenBody)
     const token = jwt.sign(tokenBody, process.env.TOKEN_SECRET)
     res.status(200).send({ data: response.role, token });
 
   } catch (error) {
-    console.log(error)
+    //console.log(error)
     return res.status(500).send("Internal Server Error");
   }
 
@@ -59,7 +59,7 @@ async function loginUser(req, res) {
 
 async function registerUser(req, res) {
   try {
-    console.log(req)
+    //console.log(req)
     //const body = req.body
     const { body } = req
     const { email } = body
@@ -132,14 +132,14 @@ async function registerUser(req, res) {
       data: responseBody
     })
   } catch (error) {
-    console.log(error)
+    //console.log(error)
     return res.status(500).send("Internal Server Error")
   }
 }
 
 async function editUser(req, res) {
   try {
-    console.log(req)
+    //console.log(req)
     //const body = req.body
     const { body } = req
     const { id } = req.params
@@ -155,7 +155,7 @@ async function editUser(req, res) {
         message: "User does not exist"
       })
     }
-    console.log(response, user_id)
+    //console.log(response, user_id)
     if (user_id != response[0].id) {
       return res.status(401).json({
         "message": "Unauthorized Access"
@@ -163,7 +163,7 @@ async function editUser(req, res) {
     }
     // ADD SCHEMA VALIDATION , CANNOT ALLOW NORMAL UPDATE 
 
-    console.log(body)
+    //console.log(body)
 
     userBody = {
       first_name: body.first_name,
@@ -185,7 +185,7 @@ async function editUser(req, res) {
 
     const editRes = await userQueries.editUser(response[0].id, userBody)
 
-    console.log(editRes)
+    //console.log(editRes)
 
     return res.status(200).json({
       message: "Updated information successfully"
@@ -193,7 +193,7 @@ async function editUser(req, res) {
 
 
   } catch (error) {
-    console.log(error)
+    //console.log(error)
     return res.status(500).send("Internal Server Error")
   }
 }
@@ -201,10 +201,10 @@ async function editUser(req, res) {
 async function getUserInfo(req, res) {
   try {
     const { body } = req
-    console.log("Here")
+    //console.log("Here")
     const { id: user_id } = req.params
     const params = req.params
-    console.log(params)
+    //console.log(params)
 
     const response = await userQueries.findUserById(user_id)
 
@@ -218,7 +218,7 @@ async function getUserInfo(req, res) {
     }
 
     var courses = []
-    console.log(response)
+    //console.log(response)
     if (response[0].role === ROLES.STUDENT) {
       courses = await courseRegQueries.getCoursesForUser(user_id)
     }
@@ -226,7 +226,7 @@ async function getUserInfo(req, res) {
     if (response[0].role === ROLES.TEACHER) {
       courses = await courseRegQueries.findCoursesForTeacher(user_id)
       courses = courses.rows
-      console.log(courses)
+      //console.log(courses)
     }
 
     return res.status(200).json(
@@ -236,7 +236,7 @@ async function getUserInfo(req, res) {
       }
     )
   } catch (error) {
-    console.log(error)
+    //console.log(error)
     res.status(500).send("Internal Server Error")
   }
 
@@ -263,7 +263,7 @@ async function getUsersByRole(req, res) {
 
     const response = await userQueries.getUsersByRole(role)
 
-    console.log(response)
+    //console.log(response)
 
     let users = response
 
@@ -272,7 +272,7 @@ async function getUsersByRole(req, res) {
       var teachers = response.map(
         async teacher => {
           var courses = await courseRegQueries.findCoursesForTeacher(teacher.id)
-          console.log(courses)
+          //console.log(courses)
           return {
             ...teacher,
             courses: courses.rows
@@ -287,7 +287,7 @@ async function getUsersByRole(req, res) {
       var students = response.map(
         async student => {
           var courses = await courseRegQueries.getCoursesForStudent(student.id)
-          console.log(courses, student)
+          //console.log(courses, student)
           return {
             ...student,
             courses: courses
@@ -303,7 +303,7 @@ async function getUsersByRole(req, res) {
       users
     })
   } catch (error) {
-    console.log(error)
+    //console.log(error)
     return res.status(500).send("Internal Server Error")
   }
 
