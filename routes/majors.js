@@ -7,10 +7,10 @@ var majorsController = require('../controllers/majors')
     
 
 router.route('/majors')
-    .get(userAuthentication(),majorsController.getMajors);
+    .get(majorsController.getMajors);
 
 router.route('/majors')
-    .post(userAuthentication(),majorsController.createMajor);
+    .post(majorsController.createMajor);
 
 router.route('/majors/department')
     .get(majorsController.getMajorsByDepartment);

@@ -10,6 +10,6 @@ router.route('/departments')
     .get(departmentsController.getDepartments);
 
 router.route('/departments')
-    .post(userAuthentication(),departmentsController.createDepartment);
+    .post(departmentsController.createDepartment);
 
 module.exports = router

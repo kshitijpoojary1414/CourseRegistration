@@ -14,6 +14,15 @@ const fetchCourseRegInfo = (user_id, course_id) => {
             })
 }
 
+
+const fetchCourseRegInfoById = (registration_id) => {
+    return db.select("*")
+            .from('public.courseregistrations')
+            .where({
+                id : registration_id
+            })
+}
+
 const getCoursesForUser = (user_id) => {
     return db('public.courseregistrations').where({
         "courseregistrations.is_active": true,
@@ -61,5 +70,6 @@ module.exports = {
     findCoursesForTeacher,
     getCoursesForStudent,
     deleteCourseRegistration,
-    fetchCourseRegInfoByCourse
+    fetchCourseRegInfoByCourse,
+    fetchCourseRegInfoById
 }

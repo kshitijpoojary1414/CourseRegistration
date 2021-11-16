@@ -91,10 +91,10 @@ async function addMultipleRegistrations (req, res) {
     const ans = await Promise.all(promises)
 
     const hasError = ans.find( a => a.errors)
-    
+    console.log(hasError)
     if(Validations.isDefined(hasError)) {
       return res.status(414).json({
-        'message' : "Some courses could not be added"
+        'message' : hasError.errorMessage 
       })
     }
 
@@ -129,9 +129,23 @@ async function dropCourseRegistrations (req, res) {
 
     //console.log("REGISTRATION",registration_id)
 
+    const ans = await courseRegistrationQueries.fetchCourseRegInfoById(registration_id)
+    console.log(ans,registration_id)
+
     const respp = await courseRegistrationQueries.deleteCourseRegistration(registration_id)
 
+<<<<<<< Updated upstream
     //console.log(respp)
+=======
+    const course = await courseQueries.getCourseInfo(ans[0].course_id) 
+
+    await courseQueries.updateCourseInfo(ans.course_id, {
+      registered : course[0].registered - 1
+    })
+
+
+    console.log(respp)
+>>>>>>> Stashed changes
 
     return res.status(200).json({
       message: 'Successfully dropped the course'
