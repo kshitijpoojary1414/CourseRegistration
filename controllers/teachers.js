@@ -14,9 +14,9 @@ async function getCoursesByTeacher (req, res) {
 
   try {
     
-    const { teacher_id } = req.query
+    const user_id = req.user_id
 
-    let coursesInfo = await teachersQueries.getCoursesByTeacher(teacher_id)
+    let coursesInfo = await teachersQueries.getCoursesByTeacher(user_id)
     
     if (
       Validations.isUndefined(coursesInfo) ||
@@ -27,7 +27,7 @@ async function getCoursesByTeacher (req, res) {
       })
     }
 
-    res.status(200).send(coursesInfo);
+    res.status(200).send(coursesInfo.rows);
 
   } catch( error ) {
     console.log(error)
