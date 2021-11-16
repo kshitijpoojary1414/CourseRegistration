@@ -134,9 +134,6 @@ async function dropCourseRegistrations (req, res) {
 
     const respp = await courseRegistrationQueries.deleteCourseRegistration(registration_id)
 
-<<<<<<< Updated upstream
-    //console.log(respp)
-=======
     const course = await courseQueries.getCourseInfo(ans[0].course_id) 
 
     await courseQueries.updateCourseInfo(ans.course_id, {
@@ -145,7 +142,6 @@ async function dropCourseRegistrations (req, res) {
 
 
     console.log(respp)
->>>>>>> Stashed changes
 
     return res.status(200).json({
       message: 'Successfully dropped the course'
