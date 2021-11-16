@@ -40,7 +40,7 @@ async function loginUser(req, res) {
     let validPassword = bcrypt.compareSync(body.password, response[0].password);
 
     if (!validPassword) {
-      res.status(400).send("Email or password is incorrect");
+      return res.status(400).send("Email or password is incorrect");
     }
 
     response = response[0]
@@ -48,7 +48,7 @@ async function loginUser(req, res) {
 
     console.log(tokenBody)
     const token = jwt.sign(tokenBody, process.env.TOKEN_SECRET)
-    res.status(200).send({ data: response.role, token });
+    return res.status(200).send({ data: response.role, token });
 
   } catch (error) {
     console.log(error)
