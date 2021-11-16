@@ -84,10 +84,7 @@ async function addGrades (req, res) {
       comments,
       user_id
     }
-    console.log("ASK",user_id)
     const response = await userQueries.findUserById(user_id)
-    
-
     if (
       Validations.isUndefined(response) ||
       Validations.isEmpty(response)
@@ -105,7 +102,9 @@ async function addGrades (req, res) {
 
     try {
       let grade = await gradesQueries.getGrade(student_id,course_id)
+      console.log("ASK",grade)
       if (!Validations.isEmpty(grade)) {
+        console.log("Update Query")
         await gradesQueries.updateGrades(gradeBody)
         gradeBody.message = "Grades updated for user"
         return res.status(200).json(gradeBody);
@@ -113,6 +112,7 @@ async function addGrades (req, res) {
     }
     catch(err) {
     }
+
 
     try {
         if(!grade.createdBy == creator){
