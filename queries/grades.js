@@ -23,6 +23,10 @@ const getGrade = (user_id,course_id) => {
         "is_active": true        
     })
     .select("*")
+
+    // return db.raw(`
+    // select * from grades where course_id='${course_id}' and user_id='${user_id}';
+    // `)
 }
 
 const getGradeForTeacher = (user_id) => {

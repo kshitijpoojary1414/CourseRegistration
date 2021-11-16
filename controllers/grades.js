@@ -29,7 +29,7 @@ async function getGrades (req, res) {
         message: "Course not found"
       })
     }
-    
+    // console.log("ASKASK", courseRegistrationInfo)
     for(i = 0; i< courseRegistrationInfo.length; i++){
       const { user_id } = courseRegistrationInfo[i]
       let userInfo = await userQueries.findUserById(user_id)
@@ -37,9 +37,10 @@ async function getGrades (req, res) {
       courseRegistrationInfo[i].first_name = first_name
       courseRegistrationInfo[i].middle_name = middle_name
       courseRegistrationInfo[i].last_name = last_name
+      console.log("ASK ",user_id,course_id)
       let gradesInfo = await gradesQueries.getGrade(user_id,course_id)
 
-      console.log("ASK gradeInfo ",gradesInfo)
+      console.log("ASK ",gradesInfo)
       if(Validations.isEmpty(gradesInfo)){
         courseRegistrationInfo[i].grades = "-"
         courseRegistrationInfo[i].comments = "-"
@@ -50,6 +51,7 @@ async function getGrades (req, res) {
       }
   }
 
+  console.log("ASK ",courseRegistrationInfo)
     if (
         Validations.isUndefined(courseRegistrationInfo) ||
         Validations.isEmpty(courseRegistrationInfo)
@@ -102,7 +104,7 @@ async function addGrades (req, res) {
 
     try {
       let grade = await gradesQueries.getGrade(student_id,course_id)
-      console.log("ASK",grade)
+      // console.log("ASK",grade)
       if (!Validations.isEmpty(grade)) {
         console.log("Update Query")
         await gradesQueries.updateGrades(gradeBody)
