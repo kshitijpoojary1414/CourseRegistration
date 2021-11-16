@@ -34,10 +34,9 @@ const getGradeForTeacher = (user_id) => {
 
 const updateGrades = (grade) => {
     return db.raw(`
-    update grades set grades='${grade.grades}' where user_id = '${grade.student_id}' and course_id ='${grade.course_id} and comments={${grade.comments}}'; 
+    update grades set grades='${grade.grades}', comments='${grade.comments}' where user_id = '${grade.student_id}' and course_id ='${grade.course_id}'; 
     `)
 }
-
 
 module.exports = {
     getGrades,
