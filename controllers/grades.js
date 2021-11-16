@@ -29,6 +29,7 @@ async function getGrades (req, res) {
         message: "Course not found"
       })
     }
+    
     for(i = 0; i< courseRegistrationInfo.length; i++){
       const { user_id } = courseRegistrationInfo[i]
       let userInfo = await userQueries.findUserById(user_id)
@@ -37,7 +38,8 @@ async function getGrades (req, res) {
       courseRegistrationInfo[i].middle_name = middle_name
       courseRegistrationInfo[i].last_name = last_name
       let gradesInfo = await gradesQueries.getGrade(user_id,course_id)
-      console.log("ASK ",gradesInfo)
+
+      console.log("ASK gradeInfo ",gradesInfo)
       if(Validations.isEmpty(gradesInfo)){
         courseRegistrationInfo[i].grades = "-"
         courseRegistrationInfo[i].comments = "-"
