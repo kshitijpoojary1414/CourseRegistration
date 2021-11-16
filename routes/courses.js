@@ -16,6 +16,10 @@ router.route('/courses/:id')
     .get(userAuthentication(),coursesController.getCourseInfo);
 
 
+router.route('/coursesByMajor/')
+    .get(userAuthentication(),coursesController.getCoureseInfoByJoin);
+
+    
     
 
 

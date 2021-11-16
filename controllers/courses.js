@@ -257,30 +257,32 @@ async function getCourseInfo (req, res) {
   
   };
   
-// [
-//     {
-//       "schedule": {
-//         "days": [
-//           "Monday"
-//         ],
-//         "startDate": "04/02/2021",
-//         "endDate": "04/05/2021",
-//         "startTime": "08:30",
-//         "endTime": "10:30"
-//       },
-//       "registration": {
-//         "limit": 10,
-//         "registered": 0
-//       },
-//       "teachers": [],
-//       "students": [],
-//       "_id": "61897cde1459159b08356208",
-//       "name": "CS660",
-//       "subject": "Analysis and Design of Algoriths",
-//       "description": "",
-//       "price": 100
-//     }
-//   ]
+
+
+async function getCoureseInfoByJoin (req, res) {
+
+  try {
+    // const { user_id } = req.body
+    const { major_id} = req.query
+
+    let courses = await courseQueries.getCoursesListByMajor(major_id)
+    console.log(courses)
+    if (
+      Validations.isUndefined(courses) ||
+      Validations.isEmpty(courses)
+  ) {
+    return res.status(404).json({
+        message: "Course not found"
+    })
+  }
+  res.status(200).json(courses.rows);
+
+  } catch( error ) {
+    console.log(error)
+    res.status(500).send("Internal Server Error");
+  }
+
+};
 
 
 
@@ -288,5 +290,6 @@ module.exports = {
     getCourses,
     addCourse,
     getCourseInfo,
-    getCoursesByMajor
+    getCoursesByMajor,
+    getCoureseInfoByJoin
 };

@@ -48,11 +48,22 @@ const updateCourseInfo = (course_id, updateBody) => {
             })
 }
 
+const getCoursesListByMajor = (major_id) => {
+    return db.raw(`
+    select u.first_name, u.last_name, c.name, c.subject, c.registered,
+    c.course_limit, c.days, c.start_time, c.end_time
+    from users u, courses c where u.role = 'teacher'
+    and u.id = c.teachers[1]
+    and c.major_id = '${major_id}';
+    `)
+}
+
 module.exports = {
     getCourses,
     addCourse,
     getCourseInfo,
     getRegisteredStudents,
     updateCourseInfo,
-    getCoursesByMajor
+    getCoursesByMajor,
+    getCoursesListByMajor
 }
