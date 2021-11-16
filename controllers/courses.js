@@ -26,7 +26,7 @@ async function getCourses (req, res) {
 
     courses = courses.map(
         async course => {
-            console.log(course)
+            //console.log(course)
             const {
                 start_date,days,start_time,end_time,end_date, ...courses2
             } = course 
@@ -63,7 +63,7 @@ async function getCourses (req, res) {
     res.status(200).send(courses);
 
   } catch( error ) {
-    console.log(error)
+    //console.log(error)
     res.status(500).send("Internal Server Error");
   }
 
@@ -81,7 +81,7 @@ async function getCoursesByMajor (req, res) {
 
     courses = courses.map(
       async course => {
-          console.log(course)
+          //console.log(course)
           const {
               start_date,days,start_time,end_time,end_date, ...courses2
           } = course 
@@ -89,10 +89,10 @@ async function getCoursesByMajor (req, res) {
           const { registered, course_limit, ...courses3 } = courses2
           const students = await courseQueries.getRegisteredStudents(course.id)
           const major = await majorQueries.getMajors(course.major_id)
-          console.log("Major",major,course.major_id)
+          //console.log("Major",major,course.major_id)
           const registrationDetails = students.find( student => student.id === (user_id))
           const hasRegistered = registrationDetails ? true : false 
-          console.log(registrationDetails,hasRegistered)
+          //console.log(registrationDetails,hasRegistered)
           return {
               schedule : {
                   startTime : start_time,
@@ -119,7 +119,7 @@ async function getCoursesByMajor (req, res) {
     res.status(200).send(courses);
 
   } catch( error ) {
-    console.log(error)
+    //console.log(error)
     res.status(500).send("Internal Server Error");
   }
 
@@ -159,18 +159,18 @@ async function addCourse (req, res) {
         major_id : body.major_id
       }
 
-      console.log(course)
+      //console.log(course)
 
       const resp = await courseQueries.addCourse(course) 
       
-      console.log(resp)
+      //console.log(resp)
       return res.status(200).json({
           message: "Course added successfully",
           data: resp[0]
       });
   
     } catch( error ) {
-      console.log(error)
+      //console.log(error)
       res.status(500).send("Internal Server Error");
     }
   
@@ -196,7 +196,7 @@ async function getCourseInfo (req, res) {
       }
 
       user = user[0]
-      console.log(course_id)
+      //console.log(course_id)
       let courses = await courseQueries.getCourseInfo(course_id) 
 
       if (
@@ -218,7 +218,7 @@ async function getCourseInfo (req, res) {
 
       var students = await courseQueries.getRegisteredStudents(course_id)
 
-      console.log(courses)
+      //console.log(courses)
       courses[0].students = students
       courses[0].teachers = teachers
 
@@ -246,41 +246,43 @@ async function getCourseInfo (req, res) {
         courses[0].hasRegistered = students.find( student => student.id === (user_id)) ? true : false
       }
 
-      console.log(courses)
+      //console.log(courses)
 
       res.status(200).json(courses[0]);
   
     } catch( error ) {
-      console.log(error)
+      //console.log(error)
       res.status(500).send("Internal Server Error");
     }
   
   };
   
-// [
-//     {
-//       "schedule": {
-//         "days": [
-//           "Monday"
-//         ],
-//         "startDate": "04/02/2021",
-//         "endDate": "04/05/2021",
-//         "startTime": "08:30",
-//         "endTime": "10:30"
-//       },
-//       "registration": {
-//         "limit": 10,
-//         "registered": 0
-//       },
-//       "teachers": [],
-//       "students": [],
-//       "_id": "61897cde1459159b08356208",
-//       "name": "CS660",
-//       "subject": "Analysis and Design of Algoriths",
-//       "description": "",
-//       "price": 100
-//     }
-//   ]
+
+
+async function getCoureseInfoByJoin (req, res) {
+
+  try {
+    // const { user_id } = req.body
+    const { major_id} = req.query
+
+    let courses = await courseQueries.getCoursesListByMajor(major_id)
+    console.log(courses)
+    if (
+      Validations.isUndefined(courses) ||
+      Validations.isEmpty(courses)
+  ) {
+    return res.status(404).json({
+        message: "Course not found"
+    })
+  }
+  res.status(200).json(courses.rows);
+
+  } catch( error ) {
+    console.log(error)
+    res.status(500).send("Internal Server Error");
+  }
+
+};
 
 
 
@@ -288,5 +290,6 @@ module.exports = {
     getCourses,
     addCourse,
     getCourseInfo,
-    getCoursesByMajor
+    getCoursesByMajor,
+    getCoureseInfoByJoin
 };

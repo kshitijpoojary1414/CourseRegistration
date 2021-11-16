@@ -15,7 +15,7 @@ async function yes() {
     })
     .select("*")
 ===
-  console.log(ans)
+  //console.log(ans)
 }
 
 yes()

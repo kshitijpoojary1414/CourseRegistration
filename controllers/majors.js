@@ -16,14 +16,14 @@ async function getMajors (req, res) {
     const { body } = req
     const { email } = body
     const { user_id } = req 
-    console.log("user_id", user_id)
+    //console.log("user_id", user_id)
 
     let majors = await majorQueries.getMajors()
 
     res.status(200).send(majors);
 
   } catch( error ) {
-    console.log(error)
+    //console.log(error)
     res.status(500).send("Internal Server Error");
   }
 };
@@ -34,14 +34,14 @@ async function getMajorsByDepartment (req, res) {
     const { body } = req
     const { email } = body
     const { user_id } = req 
-    console.log("user_id", req.query)
+    //console.log("user_id", req.query)
     const { department_id } = req.query
     let majors = await majorQueries.getMajorsByDepartment(department_id)
 
     res.status(200).send(majors);
 
   } catch( error ) {
-    console.log(error)
+    //console.log(error)
     res.status(500).send("Internal Server Error");
   }
 };
@@ -63,7 +63,7 @@ async function createMajor (req, res) {
       res.status(200).send(majors );
   
     } catch( error ) {
-      console.log(error)
+      //console.log(error)
       return res.status(500).send("Internal Server Error");
     }
   };
@@ -90,7 +90,7 @@ async function createMajor (req, res) {
       });
   
     } catch( error ) {
-      console.log(error)
+      //console.log(error)
       return res.status(500).json("Internal Server Error");
     }
   };
