@@ -10,7 +10,7 @@ const getGrades = (course_id) => {
 }
 
 const addGrades = (grade) => {
-    const fields = `'${grade.id}', '${grade.course_id}','${grade.user_id}','${grade.grades}','${grade.comments}','${grade.createdby}'`
+    const fields = `'${grade.id}', '${grade.course_id}','${grade.student_id}','${grade.grades}','${grade.comments}','${grade.user_id}'`
     return db.raw(`
        Insert into grades (id,course_id,user_id,grades,comments,createdBy) values(${fields})
     `)
@@ -34,7 +34,7 @@ const getGradeForTeacher = (user_id) => {
 
 const updateGrades = (grade) => {
     return db.raw(`
-    update grades set grades='${grade.grades}' where user_id ='${grade.user_id}' and course_id ='${grade.course_id}'; 
+    update grades set grades='${grade.grades}' where user_id ='${grade.student_id}' and course_id ='${grade.course_id}'; 
     `)
 }
 

@@ -10,6 +10,7 @@ const { Validations, Operations } = require("../utils")
 const { ROLES } = require("../constants/roles")
 const Dayjs = require("dayjs")
 const { response } = require("express");
+const { use } = require("../routes/courses");
 
 async function getGrades (req, res) {
 
@@ -68,20 +69,22 @@ async function addGrades (req, res) {
   try {
     const { body } = req
     // const body = req.body
-    const { createdby } = body 
+    const user_id = req.user_id 
+    console.log(req)
 
-    const { course_id, user_id, grades, comments} = body
+    const { course_id, student_id, grades, comments} = body
 
     const gradeBody = {
       id : Operations.guid(),
       course_id,
-      user_id,
+      student_id,
       grades,
       comments,
-      createdby
+      user_id
     }
-
-    const response = await userQueries.findUserById(createdby)
+    console.log("ASK",user_id)
+    const response = await userQueries.findUserById(user_id)
+    
 
     if (
       Validations.isUndefined(response) ||
@@ -99,7 +102,7 @@ async function addGrades (req, res) {
     }
 
     try {
-      let grade = await gradesQueries.getGrade(user_id,course_id)
+      let grade = await gradesQueries.getGrade(student_id,course_id)
       if (!Validations.isEmpty(grade)) {
         await gradesQueries.updateGrades(gradeBody)
         gradeBody.message = "Grades updated for user"
