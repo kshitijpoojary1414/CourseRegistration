@@ -17,7 +17,7 @@ async function getCoursesByTeacher (req, res) {
     const user_id = req.user_id
 
     let coursesInfo = await teachersQueries.getCoursesByTeacher(user_id)
-    
+    console.log("courses",coursesInfo.rows)
     if (
       Validations.isUndefined(coursesInfo) ||
       Validations.isEmpty(coursesInfo)
@@ -44,7 +44,7 @@ async function getTeachersByMajors (req, res) {
 
       const Info = {
         major_id,
-        role: "teacher"
+        role: ROLES.TEACHER
       }
 
       //console.log(Info)
@@ -54,14 +54,26 @@ async function getTeachersByMajors (req, res) {
         Validations.isUndefined(teacherInfo.rows) ||
         Validations.isEmpty(teacherInfo.rows)
       ) {
-        return res.status(404).send([])
+        return res.status(200).send([])
       }
+
+      const promises = teacherInfo.rows.map(
+        async teacher => {
+          const courses = await courseQueries.findCoursesForTeacher(teacher.id)
+          return {
+            ...teacher,
+            courses: courses.rows ? courses.rows : []
+          }
+        })
+
+      const response = await Promise.all(promises)
+
   
-      res.status(200).send(teacherInfo.rows);
+      return res.status(200).send(response);
   
     } catch( error ) {
-      //console.log(error)
-      res.status(500).send("Internal Server Error");
+      console.log(error)
+      return res.status(500).send("Internal Server Error");
     }
   };
 

@@ -88,6 +88,8 @@ async function getCoursesByMajor (req, res) {
 
           const { registered, course_limit, ...courses3 } = courses2
           const students = await courseQueries.getRegisteredStudents(course.id)
+          const teacherInfo = await userQueries.findUserById(course.teachers[0])
+          console.log("Teacher Info", teacherInfo)
           const major = await majorQueries.getMajors(course.major_id)
           //console.log("Major",major,course.major_id)
           const registrationDetails = students.find( student => student.id === (user_id))
@@ -109,6 +111,7 @@ async function getCoursesByMajor (req, res) {
               registrationDetails: hasRegistered ? registrationDetails.reg_id : "",
               students,
               ...courses3,
+              teachers: teacherInfo,
               major: major[0]
           }
       }
@@ -222,7 +225,10 @@ async function getCourseInfo (req, res) {
       console.log(students)
       courses[0].students = students
       courses[0].teachers = teachers
-      courses[0].grades = gradeInfo[0]
+      courses[0].grades = gradeInfo[0] ? gradeInfo[0] : {
+        grades: "-",
+        comments: "-"
+      }
 
 
       const {
@@ -254,7 +260,7 @@ async function getCourseInfo (req, res) {
       res.status(200).json(courses[0]);
   
     } catch( error ) {
-      //console.log(error)
+      console.log(error)
       res.status(500).send("Internal Server Error");
     }
   

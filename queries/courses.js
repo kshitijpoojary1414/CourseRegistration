@@ -58,6 +58,11 @@ const getCoursesListByMajor = (major_id) => {
     `)
 }
 
+const findCoursesForTeacher = (teacher_id) => {
+    // return db('public.courses').where(teacher_id,'teacher')
+    return db.raw(`select * from courses where '${teacher_id}'=ANY(teachers)`)
+}
+
 module.exports = {
     getCourses,
     addCourse,
@@ -65,5 +70,6 @@ module.exports = {
     getRegisteredStudents,
     updateCourseInfo,
     getCoursesByMajor,
-    getCoursesListByMajor
+    getCoursesListByMajor,
+    findCoursesForTeacher
 }
