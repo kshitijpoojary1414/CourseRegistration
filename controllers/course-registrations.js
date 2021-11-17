@@ -136,7 +136,7 @@ async function dropCourseRegistrations (req, res) {
 
     const course = await courseQueries.getCourseInfo(ans[0].course_id) 
 
-    await courseQueries.updateCourseInfo(ans.course_id, {
+    await courseQueries.updateCourseInfo(ans[0].course_id, {
       registered : course[0].registered - 1
     })
 
@@ -148,7 +148,7 @@ async function dropCourseRegistrations (req, res) {
     })
 
   } catch( error ) {
-    //console.log(error)
+    console.log(error)
     return res.status(500).send("Internal Server Error");
   }
 
