@@ -38,7 +38,18 @@ async function getMajorsByDepartment (req, res) {
     const { department_id } = req.query
     let majors = await majorQueries.getMajorsByDepartment(department_id)
 
-    res.status(200).send(majors);
+    const promises = majors.map( async major => {
+      const advisor = await userQueries.findUserById(major.advisor)
+      console.log('Advisor', advisor)
+      return {
+        ...major,
+        advisor: advisor[0]
+      }
+    })
+
+    const response = await Promise.all(promises)
+
+    res.status(200).send(response);
 
   } catch( error ) {
     //console.log(error)
