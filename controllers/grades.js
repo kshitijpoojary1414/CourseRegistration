@@ -25,9 +25,7 @@ async function getGrades (req, res) {
       Validations.isUndefined(courseRegistrationInfo) ||
       Validations.isEmpty(courseRegistrationInfo)
     ) {
-      return res.status(404).json({
-        message: "Course not found"
-      })
+      return res.status(200).send([])
     }
 
     for(i = 0; i< courseRegistrationInfo.length; i++){
@@ -54,9 +52,7 @@ async function getGrades (req, res) {
         Validations.isUndefined(courseRegistrationInfo) ||
         Validations.isEmpty(courseRegistrationInfo)
     ) {
-      return res.status(404).json({
-          message: "Course not found"
-      })
+      return res.status(200).send([])
     }
     res.status(200).send(courseRegistrationInfo);
 
@@ -89,13 +85,11 @@ async function addGrades (req, res) {
       Validations.isUndefined(response) ||
       Validations.isEmpty(response)
     ) {
-      return res.status(404).json(
-        { message: "Grader Not Found" }
-      )
+      return res.status(200).send([])
     }
 
     if (response[0].role !== ROLES.TEACHER) {
-      return res.status(404).json(
+      return res.status(200).json(
         { message: "User is not authorized to Grade this course" }
       )
     }

@@ -22,9 +22,7 @@ async function getCoursesByTeacher (req, res) {
       Validations.isUndefined(coursesInfo) ||
       Validations.isEmpty(coursesInfo)
     ) {
-      return res.status(404).json({
-        message: "Course not found"
-      })
+      return res.status(200).send([])
     }
 
     res.status(200).send(coursesInfo.rows);
@@ -54,7 +52,7 @@ async function getTeachersByMajors (req, res) {
         Validations.isUndefined(teacherInfo.rows) ||
         Validations.isEmpty(teacherInfo.rows)
       ) {
-        return res.status(404).send([])
+        return res.status(200).send([])
       }
   
       res.status(200).send(teacherInfo.rows);
@@ -84,9 +82,7 @@ async function getTeachersByMajors (req, res) {
         Validations.isUndefined(teacherInfo.rows) ||
         Validations.isEmpty(teacherInfo.rows)
       ) {
-        return res.status(404).json({
-          message: "Course not found"
-        })
+        return res.status(200).send([])
       }
   
       res.status(200).send(teacherInfo.rows);
