@@ -6,7 +6,7 @@ const courseQueries = require("../queries/courses")
 const { Validations, Operations } = require("../utils")
 const { ROLES } = require("../constants/roles")
 const Dayjs = require("dayjs")
-const deptQueries = require("../queries/departments");
+const gradeQueries = require("../queries/grades");
 const majorQueries = require("../queries/majors")
 const { getCoursesForStudent } = require("../queries/course-registrations");
 
@@ -218,9 +218,12 @@ async function getCourseInfo (req, res) {
 
       var students = await courseQueries.getRegisteredStudents(course_id)
 
-      //console.log(courses)
+      var gradeInfo = await gradeQueries.getGrade(user_id,course_id)
+      console.log(students)
       courses[0].students = students
       courses[0].teachers = teachers
+      courses[0].grades = gradeInfo[0]
+
 
       const {
         start_date,days,start_time,end_time,end_date, ...courses2
