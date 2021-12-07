@@ -71,6 +71,9 @@ CREATE TABLE public.majors (
 	maj_units integer, 
 	created_at timestamptz default now(),
 	updated_at timestamptz,
+	advisor uuid
+	description varchar(225),
+
 );
 
 

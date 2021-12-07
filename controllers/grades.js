@@ -20,7 +20,7 @@ async function getGrades (req, res) {
     const { course_id } = req.query
 
     let courseRegistrationInfo = await courseRegistrationQueries.fetchCourseRegInfoByCourse(course_id)
-    
+
     if (
       Validations.isUndefined(courseRegistrationInfo) ||
       Validations.isEmpty(courseRegistrationInfo)

@@ -118,7 +118,7 @@ async function getCoursesByMajor (req, res) {
   )
 
     courses = await Promise.all(courses)
-
+    console.log(courses)
     res.status(200).send(courses);
 
   } catch( error ) {
@@ -151,7 +151,7 @@ async function addCourse (req, res) {
         subject: body.subject,
         description :body.description,
         start_time : `${Dayjs(body.schedule.startTime).hour()}:${Dayjs(body.schedule.minute).minute()}`,
-        end_time : `${Dayjs(body.schedule.startTime).hour()}:${Dayjs(body.schedule.minute).minute()}`,
+        end_time : `${Dayjs(body.schedule.endTime).hour()}:${Dayjs(body.schedule.minute).minute()}`,
         start_date : Dayjs(body.schedule.startDate).format('DD/MM/YYYY'),
         end_date : Dayjs(body.schedule.endDate).format('DD/MM/YYYY'),
         teachers : body.teachers.map( teacher => {return teacher.id}),
@@ -162,7 +162,7 @@ async function addCourse (req, res) {
         major_id : body.major_id
       }
 
-      //console.log(course)
+      console.log(course)
 
       const resp = await courseQueries.addCourse(course) 
       
@@ -173,7 +173,7 @@ async function addCourse (req, res) {
       });
   
     } catch( error ) {
-      //console.log(error)
+      console.log(error)
       res.status(500).send("Internal Server Error");
     }
   

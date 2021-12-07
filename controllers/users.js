@@ -51,7 +51,7 @@ async function loginUser(req, res) {
     return res.status(200).send({ data: response.role, token });
 
   } catch (error) {
-    //console.log(error)
+    console.log(error)
     return res.status(500).send("Internal Server Error");
   }
 
